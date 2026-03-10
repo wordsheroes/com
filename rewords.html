@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>🎯 نظام الجوائز بالنسب</title>
+<style>
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #5D4037, #9b59b6);
+  color: #fff;
+  text-align: center;
+  padding: 5vw;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/* العناوين */
+h2 {
+  font-size: 8vw;
+  margin-bottom: 3vw;
+  text-shadow: 2px 2px #333;
+}
+h3 {
+  font-size: 6vw;
+  margin-top: 5vw;
+}
+
+/* شريط العملات */
+#topbar {
+  font-size: 5vw;
+  margin-bottom: 5vw;
+  background: rgba(0,0,0,0.2);
+  padding: 3vw 5vw;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* زر اللفة */
+#spinBtn {
+  padding: 4vw 8vw;
+  font-size: 6vw;
+  margin-top: 5vw;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(45deg,#f1c40f,#e67e22);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 2vw #d35400;
+  transition: all 0.2s ease;
+}
+#spinBtn:hover {
+  transform: translateY(-1vw);
+  box-shadow: 0 3vw #d35400;
+}
+#spinBtn:active {
+  transform: translateY(1vw);
+  box-shadow: 0 1.5vw #d35400;
+}
+
+/* نتيجة اللفة */
+#result {
+  margin-top: 5vw;
+  font-size: 6vw;
+  font-weight: bold;
+  text-shadow: 1px 1px #000;
+}
+
+/* قائمة الجوائز */
+.prizes {
+  margin-top: 6vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.prizes div {
+  display: flex;
+  align-items: center;
+  margin: 2vw 0;
+  width: 90%;
+  max-width: 600px;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.2);
+  padding: 2vw 3vw;
+  border-radius: 10px;
+  font-size: 4.5vw;
+}
+.bar {
+  height: 5vw;
+  border-radius: 2.5vw;
+}
+
+/* ألوان الشريط */
+.bar.none { background: #FFA500; }
+.bar.p25 { background: #FFD700; }
+.bar.p50 { background: #F1C40F; }
+.bar.free { background: #2ECC71; }
+.bar.p100 { background: #FF8C00; }
+.bar.p150 { background: #E74C3C; }
+.bar.p200 { background: #3498DB; }
+
+/* Media Query للشاشات الكبيرة */
+@media (min-width: 700px){
+  h2 { font-size: 48px; }
+  h3 { font-size: 32px; }
+  #topbar { font-size: 24px; padding: 12px 20px; }
+  #spinBtn { font-size: 24px; padding: 12px 30px; }
+  #result { font-size: 24px; }
+  .prizes div { font-size: 20px; padding: 10px 15px; }
+  .bar { height: 20px; border-radius: 10px; }
+}
+</style>
+</head>
+<body>
+
+<h2>🎯 عجلة الجوائز</h2>
+<div id="topbar">💰 العملات: <span id="coins">100</span></div>
+<button id="spinBtn">لف (50)</button>
+<p id="result"></p>
+
+<h3>احتمالات الفوز:</h3>
+<div class="prizes" id="prizeList"></div>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins")) || 100;
+let freeSpin = parseInt(localStorage.getItem("freeSpin")) || 0;
+const spinBtn = document.getElementById("spinBtn");
+document.getElementById("coins").innerText = coins;
+
+const wheelPrizes = [
+  {name:"لا شيء", percent:30},
+  {name:"25", percent:20},
+  {name:"50", percent:15},
+  {name:"لفة مجانية", percent:10},
+  {name:"100", percent:10},
+  {name:"150", percent:10},
+  {name:"200", percent:5}
+];
+
+const prizeClass = {
+  "لا شيء": "none",
+  "25": "p25",
+  "50": "p50",
+  "لفة مجانية": "free",
+  "100": "p100",
+  "150": "p150",
+  "200": "p200"
+};
+
+// عرض الجوائز
+const prizeList = document.getElementById("prizeList");
+wheelPrizes.forEach(p=>{
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <span>${p.name} (${p.percent}%)</span>
+    <div class="bar ${prizeClass[p.name]}" style="width:${p.percent*2}vw"></div>
+  `;
+  prizeList.appendChild(div);
+});
+
+// تحديث نص الزر
+function updateSpinBtn(){
+  spinBtn.innerText = freeSpin > 0 ? "لف (مجانا)" : "لف (50)";
+}
+
+// اختيار جائزة حسب النسبة
+function getPrize(){
+  const rand = Math.random()*100;
+  let sum = 0;
+  for(let i=0;i<wheelPrizes.length;i++){
+    sum += wheelPrizes[i].percent;
+    if(rand <= sum) return wheelPrizes[i].name;
+  }
+  return wheelPrizes[wheelPrizes.length-1].name;
+}
+
+spinBtn.addEventListener("click", ()=>{
+  if(freeSpin <= 0 && coins < 50){
+    alert("❌ لا يوجد ما يكفي من العملات");
+    return;
+  }
+
+  if(freeSpin > 0){
+    freeSpin--;
+    localStorage.setItem("freeSpin", freeSpin);
+  } else {
+    coins -= 50;
+  }
+
+  const prize = getPrize();
+
+  if(prize === "لفة مجانية"){
+    freeSpin++;
+    localStorage.setItem("freeSpin", freeSpin);
+    document.getElementById("result").innerText = `🎉 ربحت: ${prize}! لديك لفة مجانية`;
+  } else if(["25","50","100","150","200"].includes(prize)){
+    coins += parseInt(prize);
+    document.getElementById("result").innerText = `🎉 ربحت: ${prize}`;
+  } else {
+    document.getElementById("result").innerText = `😢 ${prize}`;
+  }
+
+  localStorage.setItem("coins",coins);
+  document.getElementById("coins").innerText = coins;
+  updateSpinBtn();
+});
+
+updateSpinBtn();
+</script>
+
+</body>
+</html>
