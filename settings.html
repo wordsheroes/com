@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>⚙️ إعدادات اللعبة</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg,#5D4037,#8E44AD);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5vw;
+}
+
+/* الحاوية */
+.container {
+  background: rgba(0,0,0,0.35);
+  padding: 8vw 5vw;
+  border-radius: 5vw;
+  box-shadow: 0 2vw 5vw rgba(0,0,0,0.5);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+/* العناوين */
+h2, h3 {
+  margin: 2vw 0;
+  text-shadow: 0.5vw 0.5vw #222;
+}
+h2 { font-size: 8vw; }
+h3 { font-size: 5.5vw; margin-top: 5vw; }
+
+/* شريط العملات */
+#topbar {
+  font-size: 4.5vw;
+  margin-bottom: 5vw;
+  background: rgba(0,0,0,0.25);
+  padding: 3vw 4vw;
+  border-radius: 4vw;
+  display: inline-block;
+  width: 100%;
+}
+
+/* إعدادات اللغة */
+.language-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3vw;
+  margin-bottom: 5vw;
+}
+.switch {
+  position: relative;
+  width: 25vw;
+  height: 8vw;
+  background: gray;
+  border-radius: 5vw;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.switch.active { background: #2ECC71; }
+.switch .circle {
+  position: absolute;
+  top: 0.5vw;
+  left: 0.5vw;
+  width: 7vw;
+  height: 7vw;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.3s;
+}
+.switch.active .circle { left: 17vw; }
+.switch-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 4.5vw;
+}
+
+/* إعدادات الرموز */
+#codeContainer {
+  display: flex;
+  justify-content: center;
+  gap: 3vw;
+  margin-top: 4vw;
+  flex-wrap: wrap;
+}
+input {
+  padding: 2.5vw 3vw;
+  border-radius: 2vw;
+  border: none;
+  font-size: 4vw;
+  flex: 1 1 40%;
+  max-width: 60%;
+}
+button.apply {
+  padding: 2.5vw 4vw;
+  border-radius: 2vw;
+  border: none;
+  font-size: 4vw;
+  cursor: pointer;
+  background: linear-gradient(45deg,#F1C40F,#E67E22);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 1vw #d35400;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+button.apply:hover { transform: translateY(-1vw); box-shadow: 0 1.5vw #d35400; }
+button.apply:active { transform: translateY(0.5vw); box-shadow: 0 0.7vw #d35400; }
+
+/* رسالة الكود */
+#message {
+  margin-top: 3vw;
+  font-size: 4vw;
+  font-weight: bold;
+  text-shadow: 0.3vw 0.3vw #000;
+  word-break: break-word;
+}
+
+/* Media query للشاشات الكبيرة */
+@media (min-width: 700px){
+  h2 { font-size: 36px; }
+  h3 { font-size: 24px; }
+  #topbar { font-size: 20px; padding: 10px 15px; }
+  input { font-size: 18px; padding: 8px 10px; }
+  button.apply { font-size: 18px; padding: 8px 12px; }
+  #message { font-size: 18px; }
+  .switch-label { font-size: 18px; }
+  .switch { width: 100px; height: 35px; }
+  .switch .circle { width: 29px; height: 29px; }
+  .switch.active .circle { left: 68px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>⚙️ إعدادات اللعبة</h2>
+  <div id="topbar">💰 العملات: <span id="coins">100</span></div>
+
+  <!-- إعدادات اللغة -->
+  <h3>اعدادات اللغة :</h3>
+  <div class="language-container">
+    <div class="switch-label">
+      Arabe
+      <div id="arabSwitch" class="switch active" onclick="toggleLanguage('ar')">
+        <div class="circle"></div>
+      </div>
+    </div>
+    <div class="switch-label">
+      English
+      <div id="enSwitch" class="switch" onclick="toggleLanguage('en')">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- إعدادات الرموز -->
+  <h3>اعدادات الرموز :</h3>
+  <div id="codeContainer">
+    <input type="text" id="codeInput" placeholder="ادخل الكود هنا">
+    <button class="apply" onclick="applyCode()">تطبيق</button>
+  </div>
+
+  <p id="message"></p>
+</div>
+
+<script>
+// العملات
+let coins = parseInt(localStorage.getItem("coins")) || 100;
+document.getElementById("coins").innerText = coins;
+
+// الأكواد
+const codes = {
+  "WELCOME50": 50,
+  "FREE100": 100,
+  "SPINFREE": "لفة مجانية",
+  "BONUS200": 200
+};
+
+// الأكواد المستخدمة لتجنب التكرار
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+
+function applyCode(){
+  const input = document.getElementById("codeInput").value.trim().toUpperCase();
+  const msg = document.getElementById("message");
+
+  if(usedCodes.includes(input)){
+    msg.innerText = "❌ لقد تم استخدام هذا الكود مسبقًا!";
+  } else if(codes[input] !== undefined){
+    let reward = codes[input];
+    if(typeof reward === "number"){
+      coins += reward;
+      msg.innerText = `🎉 تم تفعيل الكود '${input}' وحصلت على ${reward} عملة!`;
+    } else if(reward === "لفة مجانية"){
+      msg.innerText = `🎉 تم تفعيل الكود '${input}' وحصلت على لفّة مجانية!`;
+    }
+    usedCodes.push(input);
+    localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+    localStorage.setItem("coins", coins);
+    document.getElementById("coins").innerText = coins;
+  } else {
+    msg.innerText = "❌ الكود غير موجود أو غير صالح!";
+  }
+  document.getElementById("codeInput").value = "";
+}
+
+// سويتش لغة
+function toggleLanguage(lang){
+  const arab = document.getElementById("arabSwitch");
+  const en = document.getElementById("enSwitch");
+
+  if(lang==='ar'){
+    arab.classList.add('active');
+    en.classList.remove('active');
+  } else {
+    en.classList.add('active');
+    arab.classList.remove('active');
+  }
+}
+</script>
+
+</body>
+</html>
