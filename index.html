@@ -1,333 +1,222 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>Words Heroes</title>
-<style>
-body{
-  margin:0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg,#5D4037,#9b59b6);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  color:white;
-  text-align:center;
-  padding:0;
+<!DOCTYPE html>    
+<html lang="fr">    
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<title>Boutique En Ligne</title>    
+<style>    
+body{    
+    margin:0;    
+    font-family: Arial, sans-serif;    
+    background:#d9ecff;    
+}    
+
+/* BARRE SUPÉRIEURE */
+.topbar {
+    background: #2b6cb0;
+    padding: 15px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    box-sizing: border-box;
 }
 
-/* الشاشات */
-.screen{
-  display:none;
-  padding-top:8vh;
-}
-#startScreen{
-  display:block;
-}
-h1,h2,h3{
-  text-shadow: 2px 2px #333;
-  margin:0.5em 0;
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    flex-shrink: 0;
 }
 
-/* الأزرار العامة */
-button{
-  padding:2vw 4vw;
-  font-size:4vw;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  margin:1vw;
-  font-weight:bold;
-  transition: all 0.2s ease;
-}
-button:hover{
-  transform: translateY(-0.5vw);
-  box-shadow: 0 1vw rgba(0,0,0,0.3);
-}
-button:active{
-  transform: translateY(0.5vw);
-  box-shadow: 0 0.5vw rgba(0,0,0,0.3);
+.search {
+    width: 45%;
+    max-width: 300px;
 }
 
-/* أزرار الحروف */
-#letters button{
-  font-size:5vw;
-  background:#f1c40f;
-  color:black;
-  padding:3vw 4vw;
-  border-radius:10px;
-  transition: all 0.2s ease;
-}
-#letters button:hover{
-  background:#f39c12;
-  color:white;
+.search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
-/* شبكة المراحل */
-#levels{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:2vw;
-  padding:4vw;
-}
-.levelBtn{
-  font-size:4vw;
-  border-radius:12px;
-  border:none;
-  padding:2vw;
-  font-weight:bold;
-  transition: all 0.2s ease;
-}
-.levelBtn.open{
-  background: linear-gradient(45deg,#f1c40f,#e67e22);
-  color:black;
-}
-.levelBtn.open:hover{
-  transform: scale(1.05);
-}
-.levelBtn.lock{
-  background:gray;
-  color:white;
-}
-.levelBtn.completed{
-  background: gold;
-  color:black;
+/* BARRE DES CATÉGORIES */
+.categories{
+    background:#f5c542;
+    display:flex;
+    gap:15px;
+    padding:10px;
+    overflow:auto;
 }
 
-/* صندوق الإجابة والرسائل */
-#answer{
-  font-size:6vw;
-  margin:3vw;
-  min-height:6vw;
-  padding:2vw;
-  background: rgba(0,0,0,0.2);
-  border-radius:10px;
-}
-#message{
-  font-size:5vw;
-  margin-top:2vw;
-  font-weight:bold;
-  text-shadow: 1px 1px #000;
+.categories button{
+    border:none;
+    background:white;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+    white-space: nowrap;
 }
 
-/* الشريط العلوي */
-#topbar{
-  display:flex;
-  justify-content:space-between;
-  padding:2vw 4vw;
-  font-size:4vw;
-  background: rgba(0,0,0,0.2);
-  border-radius:15px;
-  margin:0 4vw 4vw 4vw;
+/* CONTENU PRINCIPAL */
+.container{
+    padding:20px;
 }
 
-/* زر التلميح */
-#hintBtn{
-  margin-top:2vw;
-  padding:2vw 4vw;
-  background: linear-gradient(45deg,#2ecc71,#27ae60);
-  color:white;
-  font-weight:bold;
-  border-radius:10px;
-}
-#hintBtn:hover{
-  background: linear-gradient(45deg,#27ae60,#2ecc71);
+.banner{
+    background:white;
+    border-radius:10px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-/* شاشة الانتظار */
-#waitScreen h2{
-  color:#E74C3C;
-  font-size:8vw;
-}
-#waitScreen p{
-  font-size:5vw;
-}
-#timer{
-  font-size:5vw;
-  font-weight:bold;
-  margin-top:2vw;
-  background: rgba(0,0,0,0.2);
-  padding:2vw;
-  border-radius:10px;
+.banner h1{
+    color:#2b6cb0;
+    margin-top: 0;
 }
 
-/* أزرار أعلى اليمين */
-#topButtons{
-  position:absolute;
-  top:2vw;
-  right:2vw;
-  display:flex;
-  gap:2vw;
-  z-index:1000;
-}
-#topButtons button{
-  font-size:5vw;
-  padding:2vw 3vw;
-  border-radius:8px;
-  background: rgba(0,0,0,0.3);
-  color:white;
-  border:none;
-  cursor:pointer;
-  transition: all 0.2s ease;
-}
-#topButtons button:hover{
-  background: rgba(0,0,0,0.6);
+.cards{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
 }
 
-/* Media Query للشاشات الصغيرة */
-@media (max-width: 600px){
-  button{ font-size:6vw; padding:3vw 5vw; }
-  #letters button{ font-size:7vw; padding:4vw 5vw; }
-  .levelBtn{ font-size:5vw; padding:4vw; }
-  #topbar{ font-size:5vw; padding:3vw 5vw; }
-  #answer{ font-size:8vw; padding:3vw; }
-  #message{ font-size:6vw; }
-  #hintBtn{ font-size:5vw; padding:3vw 5vw; }
-  #topButtons button{ font-size:6vw; padding:3vw 4vw; }
-  #waitScreen h2{ font-size:10vw; }
-  #waitScreen p,#timer{ font-size:6vw; }
+.card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.card img{
+    width:100%;
+    height:160px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:15px;
+}
+
+.card-content h3{
+    margin:0;
+    color: #333;
+}
+
+.card-content p{
+    color:#2b6cb0;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+/* تنسيق وسم الروابط ليصبح زراً منسقاً بالكامل */
+.buy-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top:10px;
+    background:#2b6cb0;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:5px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.buy-link:hover {
+    background: #1d4ed8;
+}
+
+/* FOOTER */
+.footer-line {
+    border: none;
+    border-top: 2px solid #2b6cb0;
+    margin-top: 40px;
+    opacity: 0.7;
+}
+
+.simple-footer {
+    text-align: center;
+    padding: 20px;
+    color: #2b6cb0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.footer-link {
+    color: #2b6cb0;
+    text-decoration: none;
+    margin-left: 10px;
+    border-bottom: 1px dashed #2b6cb0;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: #f5c542;
+    border-bottom-color: #f5c542;
 }
 </style>
-</head>
-<body>
 
-<div id="startScreen" class="screen">
-  <h1>Words Heroes</h1>
-  <button onclick="openLevels()">بدأ اللعب</button>
-</div>
+</head>    
+<body>    
 
-<div id="levelsScreen" class="screen" style="position:relative;">
-  <h2>اختر المرحلة</h2>
-  <div id="topButtons">
-    <button onclick="window.location.href='settings.html'">⚙️</button>
-    <button onclick="window.location.href='rewards.html'">🎯</button>
-  </div>
-  <div id="levels" style="margin-top:8vh;"></div>
-</div>
+<div class="topbar">    
+    <div class="logo">Marketplace</div>    
+    <div class="search">    
+        <input type="text" placeholder="Rechercher des produits...">    
+    </div>  
+</div>    
 
-<div id="gameScreen" class="screen">
-  <div id="topbar">
-    <div>❤️ <span id="hearts">3</span></div>
-    <div>💰 <span id="coins">0</span></div>
-    <div>Level <span id="level"></span></div>
-  </div>
-  <h3>رتب الحروف</h3>
-  <div id="letters"></div>
-  <div id="answer"></div>
-  <div id="message"></div>
-  <button onclick="reset()">مسح</button>
-  <button id="hintBtn" onclick="useHint()">تلميح 💡(20)</button>
-</div>
+<div class="categories">    
+    <button>ÉLECTRONIQUE</button>    
+    <button>MODE</button>    
+    <button>MAISON</button>    
+    <button>BEAUTÉ</button>    
+    <button>AUTOS</button>    
+    <button>OFFRES</button>    
+</div>    
 
-<div id="waitScreen" class="screen">
-  <h2>انتهت القلوب</h2>
-  <p>انتظر الوقت أو شاهد إعلان</p>
-  <button onclick="watchAd()">📺 مشاهدة إعلان</button>
-  <p id="timer"></p>
-</div>
+<div class="container">    
+    <div class="banner">    
+        <h1>BIENVENUE SUR NOTRE BOUTIQUE</h1>    
+        <p>Produits Premium, Livraison Rapide dans le Monde Entier</p>    
+    </div>    
 
-<script>
-// كلمات 100 مرحلة
-let words=[
-"قمر","شمس","بحر","سماء","نجم","ليل","نهار","مطر","ثلج","ريح",
-"كتاب","قلم","دفتر","مدرسة","طالب","معلم","درس","جامعة","حقيبة","مكتبة",
-"هاتف","حاسوب","انترنت","شاشة","لوحة","كاميرا","بطارية","شاحن","موقع","تطبيق",
-"سيارة","طائرة","قطار","دراجة","طريق","جسر","وقود","محطة","سفر","خريطة",
-"تفاح","موز","عنب","برتقال","ليمون","فراولة","مانجو","خوخ","كمثرى","بطيخ",
-"بيت","غرفة","مطبخ","حمام","باب","نافذة","سقف","جدار","حديقة","مفتاح",
-"أسد","نمر","فيل","زرافة","قرد","ذئب","ثعلب","حصان","جمل","أرنب",
-"كرة","ملعب","لاعب","فريق","هدف","حارس","مدرب","مباراة","بطولة","كأس",
-"ذهب","فضة","نحاس","حديد","معدن","حجر","صخر","رمل","طين","جبل",
-"سلام","حب","صبر","أمل","فرح","حلم","نور","قوة","عقل","قلب"
-];
+    <div class="cards">    
+        <div class="card">    
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop">    
+            <div class="card-content">    
+                <h3>Super Car</h3>    
+                <p>2 500 000 €</p>    
+                <a href="supercar.html" class="buy-link">Afficher plus</a>    
+            </div>    
+        </div>    
 
-let level=0;
-let answer="";
-let hearts=3;
-let completed = JSON.parse(localStorage.getItem("completed")) || [0];
-let coins = parseInt(localStorage.getItem("coins")) || 100;
+        <div class="card">    
+            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1200&auto=format&fit=crop">    
+            <div class="card-content">    
+                <h3>Coupe de Luxe</h3>    
+                <p>950 000 €</p>    
+                <a href="coupe.html" class="buy-link">Afficher plus</a>    
+            </div>    
+        </div>    
+    </div>
+</div>    
 
-function updateCoins(){ document.getElementById("coins").innerText = coins; }
-function show(screen){ document.querySelectorAll(".screen").forEach(s=>s.style.display="none"); document.getElementById(screen).style.display="block"; }
+<hr class="footer-line">  
+<footer class="simple-footer">  
+    <p>
+        Tout droits réservés © 2026. | 
+        <a href="terms.html" class="footer-link">Conditions Générales d'Utilisation</a>
+    </p>  
+</footer>  
 
-function openLevels(){
-  show("levelsScreen");
-  let html="";
-  for(let i=0;i<100;i++){
-    if(completed.includes(i)){ html+=`<button class="levelBtn completed" onclick="startLevel(${i})">${i+1}</button>`; }
-    else if(i === Math.max(...completed)+1){ html+=`<button class="levelBtn open" onclick="startLevel(${i})">${i+1}</button>`; }
-    else{ html+=`<button class="levelBtn lock">${i+1}</button>`; }
-  }
-  document.getElementById("levels").innerHTML=html;
-}
-
-function startLevel(l){
-  let maxOpen = Math.max(...completed)+1;
-  if(l>maxOpen) return;
-  level=l;
-  answer="";
-  document.getElementById("answer").innerHTML="";
-  document.getElementById("message").innerHTML="";
-  document.getElementById("level").innerHTML=l+1;
-  document.getElementById("hearts").innerHTML=hearts;
-  updateCoins();
-  show("gameScreen");
-
-  let letters=words[level].split('').sort(()=>Math.random()-0.5);
-  let html="";
-  letters.forEach(l=>{ html+=`<button onclick="addLetter('${l}')">${l}</button>`; });
-  document.getElementById("letters").innerHTML=html;
-}
-
-function addLetter(l){
-  answer+=l;
-  document.getElementById("answer").innerHTML=answer;
-  if(answer.length===words[level].length){
-    if(answer===words[level]){
-      document.getElementById("message").innerHTML="🎉 صحيح!";
-      if(!completed.includes(level)) completed.push(level);
-      localStorage.setItem("completed",JSON.stringify(completed));
-      coins+=10;
-      localStorage.setItem("coins",coins);
-      updateCoins();
-      setTimeout(openLevels,1000);
-    }else{
-      hearts--;
-      document.getElementById("hearts").innerHTML=hearts;
-      document.getElementById("message").innerHTML="❌ خطأ";
-      answer="";
-      document.getElementById("answer").innerHTML="";
-      if(hearts<=0) showWait();
-    }
-  }
-}
-
-function reset(){ answer=""; document.getElementById("answer").innerHTML=""; }
-
-function useHint(){
-  if(coins<20){ alert("ليس لديك ما يكفي من العملات للتلميح!"); return; }
-  coins-=20;
-  localStorage.setItem("coins",coins);
-  updateCoins();
-  alert("التلميح: أول حرف من الكلمة هو '" + words[level][0] + "'");
-}
-
-function showWait(){
-  show("waitScreen");
-  let time=300;
-  document.getElementById("timer").innerHTML=formatTime(time);
-  let timer=setInterval(()=>{
-    time--;
-    document.getElementById("timer").innerHTML=formatTime(time);
-    if(time<=0){ clearInterval(timer); hearts=3; openLevels(); }
-  },1000);
-}
-
-function formatTime(t){ let m=Math.floor(t/60); let s=t%60; return `${m}:${s<10?'0'+s:s}`; }
-
-function watchAd(){ hearts=3; openLevels(); }
-
-updateCoins();
-</script>
-</body>
+</body>    
 </html>
