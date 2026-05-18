@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Produit - Super Car</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #d9ecff;
+            color: #333;
+        }
+
+        /* BARRE SUPÉRIEURE */
+        .topbar {
+            background: #2b6cb0;
+            padding: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        /* CONTENEUR PRINCIPAL */
+        .product-container {
+            max-width: 850px; /* تم تصغير الحاوية لتعود متناسقة ومنظمة */
+            margin: 30px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+
+        /* GALERIE PHOTO */
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 240px; /* حجم متناسق ومطابق لروح المتجر القديم دون تضخيم */
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: opacity 0.3s ease;
+        }
+
+        /* شريط الصور المصغرة مع التمرير الأفقي (Scrolling) */
+        .thumbnails-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto; /* تفعيل التمرير الأفقي في حال زيادة الصور */
+            white-space: nowrap;
+            padding: 4px 2px;
+            -webkit-overflow-scrolling: touch; /* تمرير سلس على هواتف الآيفون */
+        }
+
+        /* إخفاء شريط التمرير الافتراضي للحفاظ على نظافة التصميم */
+        .thumbnails-container::-webkit-scrollbar {
+            display: none; 
+        }
+        .thumbnails-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .thumbnail {
+            width: 65px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            flex-shrink: 0; /* منع الصور من الانضغاط وتشويه أبعادها */
+        }
+
+        .thumbnail:hover, .thumbnail.active {
+            border-color: #2b6cb0;
+            opacity: 0.9;
+        }
+
+        /* INFO PRODUIT */
+        .product-info h1 {
+            color: #2b6cb0;
+            font-size: 26px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .price-tag {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: #f0f7ff;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        /* TABLEAU DES SPÉCIFICATIONS */
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .specs-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .specs-table td:first-child {
+            font-weight: bold;
+            color: #2b6cb0;
+            width: 50%;
+        }
+
+        /* ACTIONS */
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-contact {
+            flex: 2;
+            background: #2b6cb0;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: 0.2s;
+            border: none;
+        }
+
+        .btn-contact:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-back {
+            flex: 1;
+            background: #f5c542;
+            color: #333;
+            text-align: center;
+            text-decoration: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <a href="index.html" class="logo">Marketplace</a>
+        <span>Détails</span>
+    </header>
+
+    <main class="product-container">
+        
+        <div class="product-gallery">
+            <img src="supercar 1.png" id="mainImage" class="main-image" alt="Super Car">
+            
+            <div class="thumbnails-container">
+                <img src="supercar 1.png" class="thumbnail active" onclick="changeImage(this)">
+                <img src="supercar 2.png" class="thumbnail" onclick="changeImage(this)">
+                <img src="supercar 3.png" class="thumbnail" onclick="changeImage(this)">
+                <img src="supercar 4.png" class="thumbnail" onclick="changeImage(this)">
+                <img src="supercar 5.png" class="thumbnail" onclick="changeImage(this)">
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1>Super Car - Edition Limitée</h1>
+            <div class="price-tag">2 500 000 €</div>
+
+            <p class="description">
+                Découvrez l'excellence automobile avec cette Super Car d'exception. Alliant performance brute et luxe raffiné.
+            </p>
+
+            <table class="specs-table">
+                <tr>
+                    <td>Année Modèle</td>
+                    <td>2025</td>
+                </tr>
+                <tr>
+                    <td>État du véhicule</td>
+                    <td>Excellent</td>
+                </tr>
+                <tr>
+                    <td>Nombre de propriétaires</td>
+                    <td>1er Propriétaire</td>
+                </tr>
+                <tr>
+                    <td>Nombre de places</td>
+                    <td>2 Sièges</td>
+                </tr>
+                <tr>
+                    <td>Moteur</td>
+                    <td>V12 Bi-Turbo</td>
+                </tr>
+                <tr>
+                    <td>Kilométrage</td>
+                    <td>4 500 km</td>
+                </tr>
+                <tr>
+                    <td>Couleur extérieure</td>
+                    <td>Noir Carbone</td>
+                </tr>
+            </table>
+
+            <div class="actions">
+                <a href="mailto:contact@yoursite.com" class="btn-contact">CONTACTER</a>
+                <a href="index.html" class="btn-back">RETOUR</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function changeImage(element) {
+            document.getElementById('mainImage').src = element.src;
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
